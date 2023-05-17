@@ -15,13 +15,13 @@ class Point {
     this.y = y;
   }
 
-  distanceTo = point => {
+  distanceTo = (point) => {
     let xDelta = this.x - point.x;
     let yDelta = this.y - point.y;
     return Math.sqrt(xDelta * xDelta + yDelta * yDelta); // PYTHAGORAS!
   };
 
-  equals = point => point.x === this.x && point.y === this.y;
+  equals = (point) => point.x === this.x && point.y === this.y;
 
   static randomPoint = (maxX, maxY) => {
     let x = Math.random() * (maxX || 100);
@@ -29,7 +29,9 @@ class Point {
     return new Point(x, y);
   };
 }
+const point1 = new Point(19, 170);
 
+console.log(point1.distanceTo({ x: 29, y: 280 }));
 /**********************************************************
  * Wallet: keeps track of money
  *
@@ -43,13 +45,24 @@ class Point {
  **********************************************************/
 class Wallet {
   // implement Wallet!
-  constructor(money = 0) {}
+  constructor(money = 0) {
+    this.money = money;
+  }
 
-  credit = amount => {};
+  credit = (amount) => {
+    this.money += amount;
+  };
 
-  debit = amount => {};
+  debit = (amount) => {
+    this.money -= amount;
+  };
 }
+const wallet1 = new Wallet(100);
 
+wallet1.credit(10);
+wallet1.debit(15);
+
+console.log(wallet1.money);
 /**********************************************************
  * Person: defines a person with a name (and feelings)
  *
@@ -62,8 +75,19 @@ class Wallet {
  * let person = new Person(name, x, y);
  **********************************************************/
 class Person {
-  // implement Person!
+  wallet = new Wallet(0);
+  constructor(name, x, y) {
+    this.name = name;
+    this.location = new Point(x, y);
+  }
+
+  moveTo = (point) => {
+    this.location = point;
+  };
 }
+let person1 = new Person("Athony", 1, 3);
+person1.moveTo(point1);
+console.log(person1.location);
 
 /**********************************************************
  * Vendor: defines a vendor
@@ -80,9 +104,20 @@ class Person {
  *
  * new vendor = new Vendor(name, x, y);
  **********************************************************/
-class Vendor {
-  // implement Vendor!
+class Vendor extends Person {
+  range = 5;
+  price = 1;
+  constructor(name, location, wallet) {
+    super(name, location, wallet);
+  }
+  sellTo = (customer, numberOfIceCreams) => {
+    this.moveTo(customer.location);
+    customer.wallet.debit(numberOfIceCreams * this.price);
+  };
 }
+const vendor1 = new Vendor("Jasoom", 1, 3);
+const customer1 = new Person("Abood", 0, 0, 70);
+console.log(customer1);
 
 /**********************************************************
  * Customer: defines a customer
@@ -104,7 +139,7 @@ class Customer {
   // implement Customer!
 }
 
-export { Point, Wallet, Person, Customer, Vendor };
+// export { Point, Wallet, Person, Customer, Vendor };
 
 /***********************************************************
  * If you want examples of how to use the
