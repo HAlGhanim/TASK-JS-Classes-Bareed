@@ -75,10 +75,10 @@ console.log(wallet1.money);
  * let person = new Person(name, x, y);
  **********************************************************/
 class Person {
-  wallet = new Wallet(0);
   constructor(name, x, y) {
     this.name = name;
     this.location = new Point(x, y);
+    this.wallet = new Wallet(0);
   }
 
   moveTo = (point) => {
@@ -115,8 +115,6 @@ class Vendor extends Person {
     customer.wallet.debit(numberOfIceCreams * this.price);
   };
 }
-const vendorAziz = new Vendor("Aziz", 10, 10);
-console.log(vendorAziz.location);
 
 /**********************************************************
  * Customer: defines a customer
@@ -154,8 +152,9 @@ class Customer extends Person {
       this._isInRange(vendor) &&
       this._haveEnoughMoney(vendor, numberOfIceCreams)
     ) {
-      this.moveTo(vendor.location);
-      vendor.wallet.credit(numberOfIceCreams * this.price);
+      vendor.moveTo(this.location);
+      vendor.sellTo(this, numberOfIceCreams);
+      vendor.wallet.credit(numberOfIceCreams * vendor.price);
     } else {
       if (this._isInRange(vendor) === false) {
         console.log(
@@ -170,6 +169,8 @@ class Customer extends Person {
   };
 }
 
+const vendorAziz = new Vendor("Aziz", 10, 10);
+
 const nearbyCustomer = new Customer("MishMish", 11, 11);
 const distantCustomer = new Customer("Hamza", 1000, 1000);
 const brokeCustomer = new Customer("Maskeen", 12, 12);
@@ -180,12 +181,16 @@ console.log(nearbyCustomer._isInRange(vendorAziz)); // true
 console.log(distantCustomer._isInRange(vendorAziz)); // false
 console.log(brokeCustomer._isInRange(vendorAziz)); // true
 
+console.log(nearbyCustomer.wallet.money); // 10
+console.log(vendorAziz.location); // { x: 10, y: 10 }
+
 nearbyCustomer.requestIceCream(vendorAziz, 10); // fulfills conditions
 distantCustomer.requestIceCream(vendorAziz, 10); // Customer Hamza is out of range of vendor Aziz
 brokeCustomer.requestIceCream(vendorAziz, 10); // Customer Maskeen does not have enough money to buy 10 ice creams from vendor Aziz
 
+console.log(vendorAziz.location); // Vendor's location changed fron { x: 10, y: 10 } to the customer's location which is: { x: 11, y: 11 }
+console.log(vendorAziz.wallet.money); // 10
 console.log(nearbyCustomer.wallet.money); // 0
-vendorAziz.sellTo(nearbyCustomer, nearbyCustomer.numberOfIceCreams);
 
 // export { Point, Wallet, Person, Customer, Vendor };
 /***********************************************************
