@@ -117,6 +117,7 @@ class Vendor extends Person {
   sellTo = (customer, numberOfIceCreams) => {
     this.moveTo(customer.location);
     customer.wallet.debit(numberOfIceCreams * this.price);
+    this.wallet.credit(numberOfIceCreams * this.price);
   };
 }
 
@@ -158,7 +159,6 @@ class Customer extends Person {
     ) {
       vendor.moveTo(this.location);
       vendor.sellTo(this, numberOfIceCreams);
-      vendor.wallet.credit(numberOfIceCreams * vendor.price);
     } else {
       if (this._isInRange(vendor) === false) {
         console.log(
