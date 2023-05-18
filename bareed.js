@@ -85,7 +85,7 @@ class Person {
     this.location = point;
   };
 }
-let person1 = new Person("Athony", 1, 3);
+const person1 = new Person("Athony", 1, 3);
 person1.moveTo(point1);
 console.log(person1.location);
 
@@ -115,9 +115,8 @@ class Vendor extends Person {
     customer.wallet.debit(numberOfIceCreams * this.price);
   };
 }
-const vendor1 = new Vendor("Jasoom", 1, 3);
-const customer1 = new Person("Abood", 0, 0, 70);
-console.log(customer1);
+const vendorAziz = new Vendor("Aziz", 10, 10);
+console.log(vendorAziz.location);
 
 /**********************************************************
  * Customer: defines a customer
@@ -135,12 +134,60 @@ console.log(customer1);
  *
  * new customer = new Customer(name, x, y);
  **********************************************************/
-class Customer {
+class Customer extends Person {
   // implement Customer!
+  constructor(name, location, wallet) {
+    super(name, location, wallet);
+    this.wallet.money = 10;
+  }
+
+  _isInRange = (vendor) => {
+    return this.location.distanceTo(vendor.location) <= vendor.range;
+  };
+
+  _haveEnoughMoney = (vendor, numberOfIceCreams) => {
+    return this.wallet.money >= numberOfIceCreams * vendor.price;
+  };
+
+  requestIceCream = (vendor, numberOfIceCreams) => {
+    if (
+      this._isInRange(vendor) &&
+      this._haveEnoughMoney(vendor, numberOfIceCreams)
+    ) {
+      this.moveTo(vendor.location);
+      vendor.wallet.credit(numberOfIceCreams * this.price);
+    } else {
+      if (this._isInRange(vendor) === false) {
+        console.log(
+          `Customer ${this.name} is out of range of vendor ${vendor.name}`
+        );
+      } else if (this._haveEnoughMoney(vendor, numberOfIceCreams) === false) {
+        console.log(
+          `Customer ${this.name} does not have enough money to buy ${numberOfIceCreams} ice creams from vendor ${vendor.name}`
+        );
+      }
+    }
+  };
 }
 
-// export { Point, Wallet, Person, Customer, Vendor };
+const nearbyCustomer = new Customer("MishMish", 11, 11);
+const distantCustomer = new Customer("Hamza", 1000, 1000);
+const brokeCustomer = new Customer("Maskeen", 12, 12);
 
+brokeCustomer.wallet.money = 0;
+
+console.log(nearbyCustomer._isInRange(vendorAziz)); // true
+console.log(distantCustomer._isInRange(vendorAziz)); // false
+console.log(brokeCustomer._isInRange(vendorAziz)); // true
+
+nearbyCustomer.requestIceCream(vendorAziz, 10); // fulfills conditions
+distantCustomer.requestIceCream(vendorAziz, 10); // Customer Hamza is out of range of vendor Aziz
+brokeCustomer.requestIceCream(vendorAziz, 10); // Customer Maskeen does not have enough money to buy 10 ice creams from vendor Aziz
+
+console.log(nearbyCustomer.wallet.money); // 0
+vendorAziz.sellTo(nearbyCustomer, nearbyCustomer.numberOfIceCreams);
+
+// export { Point, Wallet, Person, Customer, Vendor };
 /***********************************************************
  * If you want examples of how to use the
  * these classes and how to test your code manually,
