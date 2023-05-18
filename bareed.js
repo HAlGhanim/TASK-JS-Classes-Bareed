@@ -32,6 +32,7 @@ class Point {
 const point1 = new Point(19, 170);
 
 console.log(point1.distanceTo({ x: 29, y: 280 }));
+console.log("**************************************");
 /**********************************************************
  * Wallet: keeps track of money
  *
@@ -63,6 +64,7 @@ wallet1.credit(10);
 wallet1.debit(15);
 
 console.log(wallet1.money);
+console.log("**************************************");
 /**********************************************************
  * Person: defines a person with a name (and feelings)
  *
@@ -88,6 +90,8 @@ class Person {
 const person1 = new Person("Athony", 1, 3);
 person1.moveTo(point1);
 console.log(person1.location);
+
+console.log("**************************************");
 
 /**********************************************************
  * Vendor: defines a vendor
@@ -181,12 +185,24 @@ console.log(nearbyCustomer._isInRange(vendorAziz)); // true
 console.log(distantCustomer._isInRange(vendorAziz)); // false
 console.log(brokeCustomer._isInRange(vendorAziz)); // true
 
+console.log("**************************************");
+
+console.log(nearbyCustomer._haveEnoughMoney(vendorAziz, 10)); // true
+console.log(distantCustomer._haveEnoughMoney(vendorAziz, 10)); // true
+console.log(brokeCustomer._haveEnoughMoney(vendorAziz, 10)); // false
+
+console.log("**************************************");
+
 console.log(nearbyCustomer.wallet.money); // 10
 console.log(vendorAziz.location); // { x: 10, y: 10 }
+
+console.log("**************************************");
 
 nearbyCustomer.requestIceCream(vendorAziz, 10); // fulfills conditions
 distantCustomer.requestIceCream(vendorAziz, 10); // Customer Hamza is out of range of vendor Aziz
 brokeCustomer.requestIceCream(vendorAziz, 10); // Customer Maskeen does not have enough money to buy 10 ice creams from vendor Aziz
+
+console.log("**************************************");
 
 console.log(vendorAziz.location); // Vendor's location changed fron { x: 10, y: 10 } to the customer's location which is: { x: 11, y: 11 }
 console.log(vendorAziz.wallet.money); // 10
